@@ -16,6 +16,11 @@ public class GrayscaleFilter implements Filter{
     }
 
     @Override
+    public String getFileExtension() {
+        return "jpg";
+    }
+
+    @Override
     public void transformImage(File srcFile, File outputFile) {
         BufferedImage image = null;
 
@@ -35,7 +40,7 @@ public class GrayscaleFilter implements Filter{
             }
 
             // write output
-            ImageIO.write(image, "jpg", outputFile);
+            ImageIO.write(image, this.getFileExtension(), outputFile);
 
         } catch (IOException e) {
             e.printStackTrace();

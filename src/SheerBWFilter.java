@@ -1,5 +1,5 @@
 /**
- * Represents a negative filter, akin to a film negative.
+ * Represents a grayscale filter that converts color images to grayscale images.
  */
 
 import javax.imageio.ImageIO;
@@ -8,10 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class NegativeFilter implements Filter {
+public class SheerBWFilter implements Filter{
+
     @Override
     public String getName() {
-        return "Negative";
+        return "SheerBW";
     }
 
     @Override
@@ -27,11 +28,21 @@ public class NegativeFilter implements Filter {
             image = ImageIO.read(srcFile);
 
             // apply filter
+            int avg;
             Color color;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
                     color = new Color(image.getRGB(x, y));
-                    color = new Color(255-color.getRed(), 255-color.getGreen(), 255-color.getBlue());
+                    avg = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+                    int newColor;
+                    // if brighter than 127, white. if not, black
+                    if (avg > 127) {
+                        newColor = 255;
+                    } else {
+                        newColor = 0;
+                    }
+                    // set new color
+                    color = new Color(newColor, newColor, newColor);
                     image.setRGB(x, y, color.getRGB());
                 }
             }

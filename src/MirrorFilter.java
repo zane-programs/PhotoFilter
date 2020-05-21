@@ -1,5 +1,5 @@
 /**
- * Represents a negative filter, akin to a film negative.
+ * Represents a mirror filter that mirrors images down the middle.
  */
 
 import javax.imageio.ImageIO;
@@ -8,10 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class NegativeFilter implements Filter {
+public class MirrorFilter implements Filter{
+
     @Override
     public String getName() {
-        return "Negative";
+        return "Mirror";
     }
 
     @Override
@@ -30,8 +31,8 @@ public class NegativeFilter implements Filter {
             Color color;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
-                    color = new Color(image.getRGB(x, y));
-                    color = new Color(255-color.getRed(), 255-color.getGreen(), 255-color.getBlue());
+                    color = new Color(image.getRGB(image.getWidth() - x - 1, y));
+                    // set new color
                     image.setRGB(x, y, color.getRGB());
                 }
             }

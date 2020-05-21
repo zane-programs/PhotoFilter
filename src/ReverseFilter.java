@@ -1,5 +1,5 @@
 /**
- * Represents a negative filter, akin to a film negative.
+ * Represents a filter that flips an image across the x-axis.
  */
 
 import javax.imageio.ImageIO;
@@ -8,10 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class NegativeFilter implements Filter {
+public class ReverseFilter implements Filter{
+
     @Override
     public String getName() {
-        return "Negative";
+        return "Reverse";
     }
 
     @Override
@@ -26,13 +27,19 @@ public class NegativeFilter implements Filter {
         try {
             image = ImageIO.read(srcFile);
 
-            // apply filter
-            Color color;
-            for (int x = 0; x < image.getWidth(); x++) {
+            // reverse pixels in array
+            Color[][] pixels = new Color[image.getWidth()][image.getHeight()];
+            for (int x = image.getWidth() - 1; x >= 0; x--) {
+                // outer loop (x) is in reverse to reverse order of pixels
                 for (int y = 0; y < image.getHeight(); y++) {
-                    color = new Color(image.getRGB(x, y));
-                    color = new Color(255-color.getRed(), 255-color.getGreen(), 255-color.getBlue());
-                    image.setRGB(x, y, color.getRGB());
+                    pixels[x][y] = new Color(image.getRGB(image.getWidth() - x - 1, y));
+                }
+            }
+
+            // now, apply the filter
+            for (int x = 0; x < pixels.length; x++) {
+                for (int y = 0; y < pixels[x].length; y++) {
+                    image.setRGB(x, y, pixels[x][y].getRGB());
                 }
             }
 

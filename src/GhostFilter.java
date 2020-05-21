@@ -1,5 +1,5 @@
 /**
- * Represents a negative filter, akin to a film negative.
+ * Represents a grayscale filter that converts color images to grayscale images.
  */
 
 import javax.imageio.ImageIO;
@@ -8,15 +8,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class NegativeFilter implements Filter {
+public class GhostFilter implements Filter {
     @Override
     public String getName() {
-        return "Negative";
+        return "Ghost";
     }
 
     @Override
     public String getFileExtension() {
-        return "jpg";
+        return "png";
     }
 
     @Override
@@ -27,11 +27,14 @@ public class NegativeFilter implements Filter {
             image = ImageIO.read(srcFile);
 
             // apply filter
+            int avg;
             Color color;
             for (int x = 0; x < image.getWidth(); x++) {
                 for (int y = 0; y < image.getHeight(); y++) {
                     color = new Color(image.getRGB(x, y));
-                    color = new Color(255-color.getRed(), 255-color.getGreen(), 255-color.getBlue());
+                    avg = (color.getRed() + color.getGreen() + color.getBlue()) / 3 + 25;
+                    if (avg > 255) avg = 255; // catch colors that would be > 255
+                    color = new Color(avg, avg, avg, 80);
                     image.setRGB(x, y, color.getRGB());
                 }
             }

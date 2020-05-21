@@ -31,7 +31,13 @@ public class PhotoFilter extends JFrame {
         String[] filtersList = {
                             "Choose a Filter...",
                             "Grayscale",
-                            "Negative"
+                            "Negative",
+                            "Ghost",
+                            "Sheer B & W",
+                            "Reverse",
+                            "Mirror",
+                            "Striated",
+                            "Spicy"
                             };
 
         JComboBox filterDropdown = new JComboBox(filtersList);
@@ -48,6 +54,24 @@ public class PhotoFilter extends JFrame {
              * TODO: STUDENT WORK
              *  Assign filter to the appropriate Filter object based on the dropdown selection.
              */
+            else if (selectedFilter.equals(filtersList[3])) {
+                filter = new GhostFilter();
+            }
+            else if (selectedFilter.equals(filtersList[4])) {
+                filter = new SheerBWFilter();
+            }
+            else if (selectedFilter.equals(filtersList[5])) {
+                filter = new ReverseFilter();
+            }
+            else if (selectedFilter.equals(filtersList[6])) {
+                filter = new MirrorFilter();
+            }
+            else if (selectedFilter.equals(filtersList[7])) {
+                filter = new StriationFilter();
+            }
+            else if (selectedFilter.equals(filtersList[8])) {
+                filter = new SpicyFilter();
+            }
 
 
 
@@ -120,7 +144,8 @@ public class PhotoFilter extends JFrame {
         String outputFileName = srcFile.getAbsolutePath().substring(0, srcFile.getAbsolutePath().indexOf(".")) +
                                 "_" +
                                 filter.getName() +
-                                ".jpg";
+                                "." +
+                                filter.getFileExtension();
         outputFile = new File(outputFileName);
 
         // transform image with filter
