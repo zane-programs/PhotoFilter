@@ -1,5 +1,7 @@
 # PhotoFilter
 
+#### *See `student-readme.md` for information about my new filters and edits!*
+
 Computers represent images as a sequence of numbers representing the intensity of primary colors in a given pixel. For images in the sRGB color space, each pixel of the image has three values associated with it: Red, Green, and Blue. Each of these values is between 0 and 255, and greater numbers represent higher intensity of the corresponding color in a given pixel. [This site](https://www.w3schools.com/colors/colors_picker.asp) has a simple applet that shows the relationship between RGB values and the resulting color. 
 
 In this project, you will create image filters that modify the RGB values of pixels of a source image. 
