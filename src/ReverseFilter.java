@@ -1,5 +1,5 @@
 /**
- * Represents a filter that flips an image across the x-axis.
+ * Represents a filter that flips an image across the y-axis.
  */
 
 import javax.imageio.ImageIO;
@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ReverseFilter implements Filter{
+public class ReverseFilter implements Filter {
 
     @Override
     public String getName() {
@@ -16,8 +16,8 @@ public class ReverseFilter implements Filter{
     }
 
     @Override
-    public String getFileExtension() {
-        return "jpg";
+    public String getFileExtension(File outputFile) {
+        return FilterUtil.extractFileExtension(outputFile);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ReverseFilter implements Filter{
             }
 
             // write output
-            ImageIO.write(image, this.getFileExtension(), outputFile);
+            ImageIO.write(image, this.getFileExtension(outputFile), outputFile);
 
         } catch (IOException e) {
             e.printStackTrace();

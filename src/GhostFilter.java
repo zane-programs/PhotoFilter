@@ -1,5 +1,5 @@
 /**
- * Represents a grayscale filter that converts color images to grayscale images.
+ * Represents a ghost filter that makes images into transparent "ghosts" of their originals.
  */
 
 import javax.imageio.ImageIO;
@@ -15,7 +15,8 @@ public class GhostFilter implements Filter {
     }
 
     @Override
-    public String getFileExtension() {
+    public String getFileExtension(File outputFile) {
+        // this one must be PNG
         return "png";
     }
 
@@ -40,7 +41,7 @@ public class GhostFilter implements Filter {
             }
 
             // write output
-            ImageIO.write(image, this.getFileExtension(), outputFile);
+            ImageIO.write(image, this.getFileExtension(outputFile), outputFile);
 
         } catch (IOException e) {
             e.printStackTrace();

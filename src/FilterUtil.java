@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.io.File;
+
 public class FilterUtil {
     /**
      * Caps the color value given. In other words,
@@ -20,5 +23,37 @@ public class FilterUtil {
             // color is fine as-is (0-255)
             return colorVal;
         }
+    }
+
+    /**
+     * Returns the file extension of a given
+     * file. This little snippet was written
+     * from Austin Totty (grabbed from the
+     * original PhotoFilter repo) and
+     * re-purposed for my needs.
+     *
+     * @param file
+     * @return extension of the file
+     */
+    public static String extractFileExtension(File file) {
+        return file.getName().substring(file.getName().lastIndexOf(".")+1);
+    }
+
+    /**
+     * Creates Color object with randomized RGB values
+     *
+     * @return Color object w/ random RGB
+     */
+    public static Color genRandColor() {
+        return new Color(genRandRGBValue(), genRandRGBValue(), genRandRGBValue());
+    }
+
+    /**
+     * Generates a random RGB value between 0 and 255
+     *
+     * @return RGB value (int) 0-255
+     */
+    private static int genRandRGBValue() {
+        return (int) (Math.random() * 256);
     }
 }

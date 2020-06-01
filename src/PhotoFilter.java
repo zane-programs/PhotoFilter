@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PhotoFilter extends JFrame {
     JButton sourceButton, applyFilterButton;
@@ -18,7 +19,7 @@ public class PhotoFilter extends JFrame {
 
     public PhotoFilter() throws HeadlessException {
         // create window
-        super("PhotoFilter");
+        super("Zane's Photo Filters");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
         setSize(500, 120);
@@ -32,15 +33,18 @@ public class PhotoFilter extends JFrame {
                             "Choose a Filter...",
                             "Grayscale",
                             "Negative",
-                            "Ghost",
+                            "Ghost (PNG Only)",
                             "Sheer B & W",
                             "Reverse",
                             "Mirror",
-                            "Striated",
-                            "Spicy"
+                            "Spicy",
+                            "Barred"
                             };
 
         JComboBox filterDropdown = new JComboBox(filtersList);
+
+        // This is for if the filter needs a PNG.
+        AtomicBoolean fileNeedsToBePNG = new AtomicBoolean(true);
 
         filterDropdown.addActionListener(e -> {
             String selectedFilter = (String)filterDropdown.getSelectedItem();
@@ -55,26 +59,29 @@ public class PhotoFilter extends JFrame {
              *  Assign filter to the appropriate Filter object based on the dropdown selection.
              */
             else if (selectedFilter.equals(filtersList[3])) {
+                fileNeedsToBePNG.set(true); // this HAD to be done for the lambda. corrected automatically by IntelliJ.
                 filter = new GhostFilter();
             }
             else if (selectedFilter.equals(filtersList[4])) {
+                fileNeedsToBePNG.set(false); // reset
                 filter = new SheerBWFilter();
             }
             else if (selectedFilter.equals(filtersList[5])) {
+                fileNeedsToBePNG.set(false); // reset
                 filter = new ReverseFilter();
             }
             else if (selectedFilter.equals(filtersList[6])) {
+                fileNeedsToBePNG.set(false); // reset
                 filter = new MirrorFilter();
             }
             else if (selectedFilter.equals(filtersList[7])) {
-                filter = new StriationFilter();
-            }
-            else if (selectedFilter.equals(filtersList[8])) {
+                fileNeedsToBePNG.set(false); // reset
                 filter = new SpicyFilter();
             }
-
-
-
+            else if (selectedFilter.equals(filtersList[8])) {
+                fileNeedsToBePNG.set(false); // reset
+                filter = new BarFilter();
+            }
 
             // no filter selected
             else {
@@ -105,9 +112,19 @@ public class PhotoFilter extends JFrame {
         // apply filter
         applyFilterButton = new JButton("Apply Filter");
         applyFilterButton.addActionListener(e -> {
-            applyFilter();
-            log.append(String.format("Filter %s applied. You can find the result in the file \n  %s\n",
-                            filter.getName(), outputFile.getAbsolutePath()));
+            if (fileNeedsToBePNG.get()) {
+                // file must be a PNG
+                if (FilterUtil.extractFileExtension(srcFile).equals("png")) {
+                    // we were provided with a PNG
+                    doApplyFilter();
+                } else {
+                    // special message for PNG-only filters
+                    log.append("Error: file must be a PNG to use this filter\n");
+                }
+            } else {
+                // it's just a normal filter that does not have to use a PNG
+                doApplyFilter();
+            }
         });
 
         // log text bar
@@ -145,11 +162,18 @@ public class PhotoFilter extends JFrame {
                                 "_" +
                                 filter.getName() +
                                 "." +
-                                filter.getFileExtension();
+                                filter.getFileExtension(srcFile);
         outputFile = new File(outputFileName);
 
         // transform image with filter
         filter.transformImage(srcFile, outputFile);
+    }
+
+    private void doApplyFilter() {
+        this.applyFilter();
+            log.append(String.format("Filter %s applied. You can find the result in the file \n  %s\n",
+                            filter.getName(),
+                    outputFile.getAbsolutePath()));
     }
 
     // main

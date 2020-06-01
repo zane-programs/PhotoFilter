@@ -7,12 +7,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SpicyFilter implements Filter {
-    private final int GRAIN_SIDE_SIZE = 6;
+    private final int GRAIN_SIDE_SIZE = 6; // how big each averaged area should be
 
     @Override
     public String getName() {
@@ -20,8 +18,8 @@ public class SpicyFilter implements Filter {
     }
 
     @Override
-    public String getFileExtension() {
-        return "jpg";
+    public String getFileExtension(File outputFile) {
+        return FilterUtil.extractFileExtension(outputFile);
     }
 
     @Override
@@ -32,16 +30,13 @@ public class SpicyFilter implements Filter {
             image = ImageIO.read(srcFile);
 
             // apply filter
-//            Color color1, color2, color3, color4, finalColor;
             Color finalColor;
             Color[][] colors;
+            // nested loop for matrix manipulation
             for (int x = 0; x < image.getWidth(); x += 2) {
                 for (int y = 0; y < image.getHeight(); y += 2) {
-//                    color1 = new Color(image.getRGB(x, y));
-//                    color2 = new Color(image.getRGB(x + 1, y));
-//                    color3 = new Color(image.getRGB(x, y + 1));
-//                    color4 = new Color(image.getRGB(x + 1, y + 1));
-                    colors = new Color[GRAIN_SIDE_SIZE][GRAIN_SIDE_SIZE];
+                    colors = new Color[GRAIN_SIDE_SIZE][GRAIN_SIDE_SIZE]; // color storage for avg and replace
+                    // fill the array with colors
                     for (int i = 0; i < GRAIN_SIDE_SIZE; i++) {
                         for (int j = 0; j < GRAIN_SIDE_SIZE; j++) {
                             // it's a square.
@@ -52,35 +47,30 @@ public class SpicyFilter implements Filter {
                         }
                     }
 
+                    // averages colors within the selected grain square
                     finalColor = averageColors(flatten2DArray(colors));
 
+                    // set that color for all of the pixels that were pulled from for average
                     for (int i = 0; i < colors.length; i++) {
                         for (int j = 0; j < colors[i].length; j++) {
                             if (x + i + 1 <= image.getWidth() && y + j + 1 <= image.getHeight())
                                 image.setRGB(x + i, y + j, finalColor.getRGB());
                         }
                     }
-//                    image.setRGB(x, y, finalColor.getRGB());
-//                    image.setRGB(x + 1, y, finalColor.getRGB());
-//                    image.setRGB(x, y + 1, finalColor.getRGB());
-//                    image.setRGB(x + 1, y + 1, finalColor.getRGB());
                 }
             }
 
             // write output
-            ImageIO.write(image, this.getFileExtension(), outputFile);
+            ImageIO.write(image, this.getFileExtension(outputFile), outputFile);
 
         } catch (IOException e) {
+            // we had an oops!
             e.printStackTrace();
             return;
         }
     }
 
     /* helper methods */
-    private float averageFour(int num1, int num2, int num3, int num4) {
-        return (((float) num1) + num2 + num3 + num4) / 4;
-    }
-
     private int randIntBetween(int lowerBound, int upperBound) {
         return (int) (Math.random() * upperBound) + lowerBound;
     }
@@ -89,16 +79,6 @@ public class SpicyFilter implements Filter {
         int sign = (Math.random() >= 0.5) ? 1 : -1;
         return sign * randIntBetween(lowerBound, upperBound);
     }
-
-//    private Color averageColors(Color color1, Color color2, Color color3, Color color4) {
-//        int red = FilterUtil.capColor((int) averageFour(color1.getRed(), color2.getRed(), color3.getRed(), color4.getRed()) + randSignRandIntBetween(10, 25));
-//        int green = FilterUtil.capColor((int) averageFour(color1.getGreen(), color2.getGreen(), color3.getGreen(), color4.getGreen()) + randSignRandIntBetween(10, 25));
-//        int blue = FilterUtil.capColor((int) averageFour(color1.getBlue(), color2.getBlue(), color3.getBlue(), color4.getBlue()) + randSignRandIntBetween(10, 25));
-//
-////        System.out.println("rgb(" + red + ", " + green + ", " + blue + ")");
-//
-//        return new Color(red, green, blue);
-//    }
 
     private int randomifyColorValue(int val) {
         return FilterUtil.capColor(val + randSignRandIntBetween(5, 20));
@@ -113,6 +93,7 @@ public class SpicyFilter implements Filter {
             blueTally += color.getBlue();
         }
 
+        //
         // actual averaging
         redTally /= colorList.size();
         greenTally /= colorList.size();

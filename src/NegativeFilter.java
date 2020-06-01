@@ -15,8 +15,8 @@ public class NegativeFilter implements Filter {
     }
 
     @Override
-    public String getFileExtension() {
-        return "jpg";
+    public String getFileExtension(File outputFile) {
+        return FilterUtil.extractFileExtension(outputFile);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class NegativeFilter implements Filter {
             }
 
             // write output
-            ImageIO.write(image, this.getFileExtension(), outputFile);
+            ImageIO.write(image, this.getFileExtension(outputFile), outputFile);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class MirrorFilter implements Filter{
+public class BarFilter implements Filter{
 
     @Override
     public String getName() {
-        return "Mirror";
+        return "Barred";
     }
 
     @Override
@@ -28,12 +28,12 @@ public class MirrorFilter implements Filter{
             image = ImageIO.read(srcFile);
 
             // apply filter
-            Color color;
-            for (int x = 0; x < image.getWidth(); x++) {
-                for (int y = 0; y < image.getHeight(); y++) {
-                    color = new Color(image.getRGB(image.getWidth() - x - 1, y));
-                    // set new color
-                    image.setRGB(x, y, color.getRGB());
+            for (int y = 0; y < image.getHeight(); y++) {
+                int rgbVal = FilterUtil.genRandColor().getRGB();
+                for (int x = 0; x < image.getWidth(); x++) {
+                    if (y % 5 == 0) {
+                        image.setRGB(x, y, rgbVal);
+                    }
                 }
             }
 
