@@ -6,6 +6,7 @@ This is _your_ README. Use this space to share how you approached the problems o
 - Fully describe the effect of each of your filters and how that effect was achieved by modifying pixel data of the image. Include a written description and example pictures in your readme. 
 
 **The image being manipulated by the filters below is here:**
+
 ![Original Image](resources/arch_tiny.jpg "Original")
 
 - _NOTE: This Student README does not contain the original filters created by Austin. Those can be seen in `README.md`._
